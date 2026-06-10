@@ -1,0 +1,11 @@
+.hermes/
+.trae/
+mydata/
+.codex_tmp/
+*.log
+log.txt
+*_log.txt
+edu_log*.txt
+psych_log*.txt
+Thumbs.db
+.DS_Store

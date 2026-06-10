@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>高等教育心理学 练习系统</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Microsoft YaHei","PingFang SC",sans-serif;background:#f0f2f5;padding:20px}
+.container{max-width:800px;margin:auto}
+.header{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:25px;border-radius:12px;margin-bottom:20px;text-align:center}
+.header h1{font-size:22px;margin-bottom:8px}.header p{font-size:14px;opacity:.9}
+.toolbar{background:#fff;border-radius:12px;padding:15px 20px;margin-bottom:15px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.toolbar .info{font-size:14px;color:#666;flex:1}
+.toolbar select,.toolbar button{padding:8px 16px;border-radius:8px;border:1px solid #d9d9d9;font-size:14px;cursor:pointer}
+.toolbar button{background:#667eea;color:#fff;border:none}.toolbar button:hover{opacity:.85}
+.q-card{background:#fff;border-radius:12px;padding:20px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.q-card.correct{border-left:4px solid #52c41a}.q-card.wrong{border-left:4px solid #ff4d4f}
+.q-hdr{font-size:15px;font-weight:600;color:#333;margin-bottom:12px;line-height:1.6}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;margin-right:8px;color:#fff}
+.bd-dan{background:#1890ff}.bd-duo{background:#fa8c16}.bd-pan{background:#52c41a}
+.opt{padding:8px 12px;margin:4px 0;border-radius:6px;border:1px solid #e8e8e8;cursor:pointer;font-size:14px;line-height:1.5}
+.opt:hover{background:#f6f8ff;border-color:#667eea}
+.opt.sel{background:#e6f7ff;border-color:#1890ff}
+.opt.ca{background:#f6ffed;border-color:#52c41a;color:#135200}
+.opt.wa{background:#fff2f0;border-color:#ff4d4f;color:#a8071a}
+.opt.dis{cursor:default;opacity:.8}
+.res{margin-top:10px;padding:12px;border-radius:8px;font-size:14px;line-height:1.6}
+.res.ok{background:#f6ffed;border:1px solid #b7eb8f;color:#135200}
+.res.bad{background:#fff2f0;border:1px solid #ffccc7;color:#a8071a}
+.res .exp{margin-top:6px;color:#555;font-size:13px}
+.sa{text-align:center;margin:20px 0}
+.sbtn{padding:12px 48px;font-size:16px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;cursor:pointer}
+.sbtn:hover{opacity:.9}
+.sa2{background:#fff;border-radius:12px;padding:20px;margin:20px 0;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.08);display:none}
+.sa2 h2{font-size:28px;color:#667eea}.sa2 p{color:#666;margin-top:5px}
+.lbox{background:#fff;border-radius:12px;padding:20px;margin-top:20px;box-shadow:0 2px 8px rgba(0,0,0,.08);display:none}
+.ltbl{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+.ltbl th{background:#fafafa;padding:8px 12px;text-align:left;border-bottom:2px solid #f0f0f0}
+.ltbl td{padding:8px 12px;border-bottom:1px solid #f0f0f0}
+.hbtn{background:#f5f5f5;border:1px solid #d9d9d9;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:14px}
+.hbtn:hover{background:#e8e8e8}
+.lc{text-align:left;font-size:13px;background:#f5f5f5;padding:15px;border-radius:8px;max-height:400px;overflow:auto;white-space:pre-wrap;word-break:break-all}
+@media(max-width:600px){.header h1{font-size:18px}.toolbar{flex-direction:column}}</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>📘 高等教育心理学 · 随堂练习</h1>
+<p>题库 501 题（单选135 + 多选109 + 判断257）</p>
+</div>
+<div class="toolbar">
+<div class="info"><strong id="qCount">0</strong> 题，共 <strong id="totalPts">0</strong> 分</div>
+<select id="numSelect">
+<option value="20">20 题（练习）</option>
+<option value="50">50 题（强化）</option>
+<option value="100" selected>100 分卷（模拟考试）</option>
+</select>
+<button onclick="gen()">🔄 生成新试卷</button>
+<button class="hbtn" onclick="th()">📊 答题记录</button>
+</div>
+<div id="qlist"></div>
+<div class="sa" id="sa" style="display:none">
+<button class="sbtn" onclick="sub()">✅ 提交答案</button>
+</div>
+<div class="toolbar" id="lbar" style="display:none">
+<button class="hbtn" onclick="sl()">📋 查看答题日志</button>
+<button class="hbtn" onclick="cl()" style="margin-left:5px">📝 复制日志</button>
+<button class="hbtn" onclick="dl()" style="margin-left:5px">⬇️ 导出日志</button>
+</div>
+<div class="sa2" id="sca">
+<h2 id="sco">0分</h2>
+<p id="scd"></p>
+</div>
+<div class="sa2" id="loga" style="display:none">
+<h3>📋 本轮答题日志</h3>
+<div class="lc" id="lgc"></div>
+<button class="hbtn" style="margin-top:10px" onclick="cl()">📝 复制日志</button>
+<button class="hbtn" style="margin-top:10px;margin-left:5px" onclick="dl()">⬇️ 导出日志</button>
+<button class="hbtn" style="margin-top:10px;margin-left:5px" onclick="document.getElementById('loga').style.display='none'">关闭</button>
+</div>
+<div class="lbox" id="lb">
+<h3>📊 答题记录</h3>
+<table class="ltbl"><thead><tr><th>时间</th><th>得分</th><th>正确率</th><th>单选</th><th>多选</th><th>判断</th></tr></thead>
+<tbody id="rb"></tbody></table>
+</div>
+</div>
+<script>
+var DATA_FILE = "psych_quiz_data.json";
+var AQ = [], CQ = [], SUB = false, LD = null, HK = "psych_v1", DBN = HK + "_db", STORE = "records", MAX_REC = 80, USE_IDB = location.protocol !== "file:" && "indexedDB" in window, DBN = HK + "_db", STORE = "records", MAX_REC = 80, USE_IDB = location.protocol !== "file:" && "indexedDB" in window;
+function LQ(){fetch(DATA_FILE,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status+' '+r.statusText);return r.json()}).then(function(data){AQ=data;gen()}).catch(function(e){console.error(e);document.getElementById('qlist').innerHTML='<div class="q-card"><div class="q-hdr">题库加载失败</div><div class="res bad" style="display:block">请通过 GitHub Pages 或本地 HTTP 服务打开本页面，例如在目录中运行 <code>python -m http.server 8000</code> 后访问 <code>http://localhost:8000/</code>。</div></div>'})}
+
+function SF(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function BG(t){return t=='单选'?'<span class="badge bd-dan">单选</span>':t=='多选'?'<span class="badge bd-duo">多选</span>':'<span class="badge bd-pan">判断</span>'}
+function GS(i){var e=document.querySelectorAll('.opt[data-q="'+i+'"].sel');return Array.from(e).map(function(el){return el.dataset.opt}).sort().join('')}
+function RS(){var h='',to={'单选':0,'多选':1,'判断':2};CQ.sort(function(a,b){return to[a.type]-to[b.type]});
+for(var k=0;k<CQ.length;k++){var q=CQ[k],isM=q.type=='多选';
+h+='<div class="q-card" id="c'+k+'"><div class="q-hdr">'+BG(q.type)+(k+1)+'. '+q.text+'</div><div class="opts" id="o'+k+'">';
+var ks=Object.keys(q.options);for(var j=0;j<ks.length;j++){h+='<div class="opt" data-q="'+k+'" data-opt="'+ks[j]+'" onclick="SO('+k+',\''+ks[j]+'\','+isM+')">'+ks[j]+'. '+q.options[ks[j]]+'</div>'}
+h+='</div><div class="res" id="r'+k+'" style="display:none"></div></div>'}
+document.getElementById('qlist').innerHTML=h}
+function SO(i,o,m){if(SUB)return;var es=document.querySelectorAll('.opt[data-q="'+i+'"]');
+for(var j=0;j<es.length;j++){if(m&&es[j].dataset.opt==o)es[j].classList.toggle('sel');else if(!m)es[j].classList.toggle('sel',es[j].dataset.opt==o)}}
+function sub(){SUB=true;var ts=0,cr=0,dt={'单选':[0,0],'多选':[0,0],'判断':[0,0]};
+for(var k=0;k<CQ.length;k++){var q=CQ[k],se=GS(k),ok=se===q.answer,pt=q.type=='单选'?1:q.type=='多选'?1.5:1;
+var es=document.querySelectorAll('.opt[data-q="'+k+'"]');
+for(var j=0;j<es.length;j++){es[j].classList.add('dis');if(q.answer.indexOf(es[j].dataset.opt)>=0)es[j].classList.add('ca');
+if(es[j].classList.contains('sel')&&q.answer.indexOf(es[j].dataset.opt)<0)es[j].classList.add('wa')}
+var crd=document.getElementById('c'+k);if(ok){ts+=pt;cr++;crd.classList.add('correct')}else crd.classList.add('wrong');
+dt[q.type][0]++;if(ok)dt[q.type][1]++;var rd=document.getElementById('r'+k);rd.style.display='block';
+var at=q.type=='判断'?(q.answer=='A'?'对':'错'):q.answer,et=q.explanation||'';
+rd.className='res '+(ok?'ok':'bad');
+rd.innerHTML='<strong>答案：'+at+'</strong><div class="exp">得分：'+(ok?pt:0)+'/'+pt+'分'+(et?'<br><br>💡 解析：'+et:'')+'</div>'}
+document.getElementById('sa').style.display='none';document.getElementById('lbar').style.display='';
+var sc=document.getElementById('sca');sc.style.display='block';
+document.getElementById('sco').textContent=ts+'分';var rr=Math.round(cr/CQ.length*100);
+document.getElementById('scd').textContent='正确 '+cr+'/'+CQ.length+' 题 ('+rr+'%) | 单选 '+dt['单选'][1]+'/'+dt['单选'][0]+' | 多选 '+dt['多选'][1]+'/'+dt['多选'][0]+' | 判断 '+dt['判断'][1]+'/'+dt['判断'][0];
+gl();sh(ts,rr,dt,LD).then(dl)}
+function gen(){SUB=false;document.getElementById('sca').style.display='none';document.getElementById('lbar').style.display='none';
+var v=document.getElementById('numSelect').value;
+var sp=AQ.filter(function(q){return q.type=='单选'}),mp=AQ.filter(function(q){return q.type=='多选'}),jp=AQ.filter(function(q){return q.type=='判断'});
+var ns,nd,nj;if(v=='20'){ns=6;nd=4;nj=10}else if(v=='50'){ns=14;nd=10;nj=26}else{ns=24;nd=20;nj=46}
+CQ=[].concat(SF([].concat(sp)).slice(0,ns),SF([].concat(mp)).slice(0,nd),SF([].concat(jp)).slice(0,nj));
+RS();document.getElementById('sa').style.display='block';document.getElementById('qCount').textContent=CQ.length;
+var tp=0;for(var k=0;k<CQ.length;k++)tp+=CQ[k].type=='单选'?1:CQ[k].type=='多选'?1.5:1;document.getElementById('totalPts').textContent=tp}
+function OD(){return new Promise(function(res,rej){var q=indexedDB.open(DBN,1);q.onupgradeneeded=function(e){var db=e.target.result;if(!db.objectStoreNames.contains(STORE)){var st=db.createObjectStore(STORE,{keyPath:'id',autoIncrement:true});st.createIndex('timeMs','timeMs')}};q.onsuccess=function(){res(q.result)};q.onerror=function(){rej(q.error)}})}
+function LR(){try{return JSON.parse(localStorage.getItem(HK)||'[]')}catch(e){return []}}
+function SR(r){var rec=LR();rec.unshift(r);if(rec.length>MAX_REC)rec.length=MAX_REC;localStorage.setItem(HK,JSON.stringify(rec));localStorage.setItem(HK+'_log_txt',rec.slice().reverse().map(function(x){return x.log}).filter(Boolean).join(String.fromCharCode(10)+String.fromCharCode(10)));return Promise.resolve()}
+function GR(){if(!USE_IDB)return Promise.resolve(LR());return OD().then(function(db){return new Promise(function(res,rej){var out=[],tx=db.transaction(STORE,'readonly'),st=tx.objectStore(STORE);st.openCursor(null,'prev').onsuccess=function(e){var c=e.target.result;if(c){out.push(c.value);c.continue()}else res(out.length?out:LR())};tx.onerror=function(){rej(tx.error)}})}).catch(function(){return LR()})}
+function TR(db){return new Promise(function(res){var ids=[],tx=db.transaction(STORE,'readonly'),st=tx.objectStore(STORE);st.openCursor(null,'prev').onsuccess=function(e){var c=e.target.result;if(c){ids.push(c.primaryKey);c.continue()}else res(ids.slice(MAX_REC))};tx.onerror=function(){res([])}}).then(function(ids){if(!ids.length)return;return new Promise(function(res){var tx=db.transaction(STORE,'readwrite'),st=tx.objectStore(STORE);ids.forEach(function(id){st.delete(id)});tx.oncomplete=res;tx.onerror=res})})}
+function WR(r){if(!USE_IDB)return SR(r);return OD().then(function(db){return new Promise(function(res,rej){var tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).add(r);tx.oncomplete=function(){res(db)};tx.onerror=function(){rej(tx.error)}}).then(TR)}).catch(function(){return SR(r)})}
+function sh(s,r,d,log){var rec={time:new Date().toLocaleString('zh-CN'),timeMs:Date.now(),score:s,rate:r,dan:d['单选'][1]+'/'+d['单选'][0],duo:d['多选'][1]+'/'+d['多选'][0],pan:d['判断'][1]+'/'+d['判断'][0],log:log||''};return WR(rec).then(rh)}
+function th(){var b=document.getElementById('lb');b.style.display=getComputedStyle(b).display=='none'?'block':'none';rh()}
+function rh(){var tb=document.getElementById('rb');tb.innerHTML='<tr><td colspan="6">读取中...</td></tr>';return GR().then(function(rec){var h='';for(var k=0;k<Math.min(rec.length,20);k++){var r=rec[k];h+='<tr><td>'+r.time+'</td><td>'+r.score+'</td><td>'+r.rate+'%</td><td>'+r.dan+'</td><td>'+r.duo+'</td><td>'+r.pan+'</td></tr>'}tb.innerHTML=h||'<tr><td colspan="6">暂无记录</td></tr>'})}
+function gl(){var ts=new Date().toLocaleString('zh-CN'),NL=String.fromCharCode(10),lg='===== 答题日志: '+ts+' ====='+NL+'试卷共 '+CQ.length+' 题'+NL,cl=[],wl=[],tp=0,ep=0;
+for(var k=0;k<CQ.length;k++){var q=CQ[k],se=GS(k),ok=se===q.answer,pt=q.type=='单选'?1:q.type=='多选'?1.5:1;tp+=pt;if(ok)ep+=pt;
+var at=q.type=='判断'?(q.answer=='A'?'对':'错'):q.answer;
+var al=q.answer.split(''),ats=[];for(var j=0;j<al.length;j++)ats.push(q.options[al[j]]||al[j]);var atd=ats.join('、');
+var es=document.querySelectorAll('.opt[data-q="'+k+'"].sel'),sl=[];for(var j=0;j<es.length;j++)sl.push(es[j].dataset.opt);
+var ua=sl.length===0?'（未选）':sl.join(''),uls=[];for(var j=0;j<sl.length;j++)uls.push(q.options[sl[j]]||sl[j]);
+var uad=ua==='（未选）'?ua:uls.join('、');
+var en='#'+(k+1)+' ['+q.type+'] '+q.text+NL+'   你的答案: '+uad+NL+'   正确答案: '+atd;
+if(ok)cl.push(en);else wl.push(en)}
+lg+=NL+NL+'📗 正确题目 ('+cl.length+'题):'+NL+(cl.length>0?cl.join(NL)+NL:'  无'+NL);
+lg+=NL+'📕 错误题目 ('+wl.length+'题):'+NL+(wl.length>0?wl.join(NL)+NL:'  无'+NL);
+lg+=NL+'📊 总分: '+ep+'/'+tp+NL+'============================';LD=lg}
+function AL(){return GR().then(function(rec){var NL=String.fromCharCode(10);return rec.slice().reverse().map(function(x){return x.log}).filter(Boolean).join(NL+NL)||LD||''})}
+function dl(){if(!LD)return;AL().then(function(all){var blob=new Blob([all],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='log.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(url)},1000)})}
+function sl(){if(!LD){alert('请先提交答案！');return}document.getElementById('loga').style.display='block';document.getElementById('lgc').textContent=LD}
+function cl(){if(!LD){alert('请先提交答案！');return}
+navigator.clipboard.writeText(LD).then(function(){alert('✅ 日志已复制到剪贴板！')}).catch(function(){var ta=document.createElement('textarea');ta.value=LD;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('✅ 日志已复制到剪贴板！')})}
+window.onload=LQ
+</script>
+</body>
+</html>

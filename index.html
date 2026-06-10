@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>两学考试练习系统</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif;background:#f4f6f8;color:#1f2933}
+.page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px}
+.shell{width:100%;max-width:940px}
+.top{margin-bottom:22px}
+.title{font-size:28px;font-weight:700;margin:0 0 8px}
+.sub{margin:0;color:#52606d;font-size:15px;line-height:1.7}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}
+.card{background:#fff;border:1px solid #e4e7eb;border-radius:8px;padding:22px;box-shadow:0 8px 24px rgba(31,41,51,.06)}
+.card h2{font-size:20px;margin:0 0 8px}
+.meta{color:#66788a;font-size:14px;margin:0 0 18px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+a.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:9px 15px;border-radius:7px;text-decoration:none;font-size:14px;font-weight:600}
+.primary{background:#2563eb;color:#fff}
+.secondary{background:#eef2f7;color:#243b53;border:1px solid #d9e2ec}
+.panel{margin-top:16px;background:#fff;border:1px solid #e4e7eb;border-radius:8px;padding:16px 18px}
+.panel h2{font-size:16px;margin:0 0 8px}
+.links{display:flex;gap:12px;flex-wrap:wrap;font-size:14px}
+.links a{color:#2563eb;text-decoration:none}
+.links a:hover{text-decoration:underline}
+.note{margin:10px 0 0;color:#66788a;font-size:13px;line-height:1.7}
+@media(max-width:720px){
+.page{align-items:flex-start;padding:20px}
+.grid{grid-template-columns:1fr}
+.title{font-size:24px}
+}
+</style>
+</head>
+<body>
+<main class="page">
+<div class="shell">
+<section class="top">
+<h1 class="title">两学考试练习系统</h1>
+<p class="sub">选择科目开始练习。答题记录保存在当前浏览器，可导出为文本日志。</p>
+</section>
+
+<section class="grid" aria-label="练习入口">
+<article class="card">
+<h2>高等教育学</h2>
+<p class="meta">题库 472 题：单选 304，多选 83，判断 85。</p>
+<div class="actions">
+<a class="btn primary" href="./高等教育学练习系统.html">进入练习</a>
+<a class="btn secondary" href="./edu_quiz_data.json">查看数据</a>
+</div>
+</article>
+
+<article class="card">
+<h2>高等教育心理学</h2>
+<p class="meta">题库 501 题：单选 135，多选 109，判断 257。</p>
+<div class="actions">
+<a class="btn primary" href="./高等教育心理学练习系统.html">进入练习</a>
+<a class="btn secondary" href="./psych_quiz_data.json">查看数据</a>
+</div>
+</article>
+</section>
+
+<section class="panel">
+<h2>项目文件</h2>
+<div class="links">
+<a href="./README.md">README</a>
+<a href="./LICENSE-CODE">代码授权</a>
+<a href="./LICENSE-CONTENT">内容授权</a>
+</div>
+<p class="note">本项目为非官方学习资料，题目和解析仍建议结合教材与课程要求复核。</p>
+</section>
+</div>
+</main>
+</body>
+</html>
