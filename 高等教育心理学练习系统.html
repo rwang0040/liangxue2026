@@ -90,6 +90,10 @@ var AQ = [], CQ = [], SUB = false, LD = null, HK = "psych_v1", DBN = HK + "_db",
 function LQ(){fetch(DATA_FILE,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status+' '+r.statusText);return r.json()}).then(function(data){AQ=data;gen()}).catch(function(e){console.error(e);document.getElementById('qlist').innerHTML='<div class="q-card"><div class="q-hdr">题库加载失败</div><div class="res bad" style="display:block">请通过 GitHub Pages 或本地 HTTP 服务打开本页面，例如在目录中运行 <code>python -m http.server 8000</code> 后访问 <code>http://localhost:8000/</code>。</div></div>'})}
 
 function SF(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function QID(q){return q.type+'#'+q.num}
+function RQ(){try{return JSON.parse(localStorage.getItem(HK+'_recent_q')||'[]')}catch(e){return []}}
+function SQ(qs){var cur=qs.map(QID),seen={},old=RQ(),out=[];cur.concat(old).forEach(function(id){if(!seen[id]){seen[id]=1;out.push(id)}});localStorage.setItem(HK+'_recent_q',JSON.stringify(out.slice(0,100)))}
+function PK(pool,n,rs){var fresh=pool.filter(function(q){return !rs[QID(q)]}),pick=SF([].concat(fresh)).slice(0,n);if(pick.length<n){var used={};pick.forEach(function(q){used[QID(q)]=1});pick=pick.concat(SF([].concat(pool)).filter(function(q){return !used[QID(q)]}).slice(0,n-pick.length))}return pick}
 function BG(t){return t=='单选'?'<span class="badge bd-dan">单选</span>':t=='多选'?'<span class="badge bd-duo">多选</span>':'<span class="badge bd-pan">判断</span>'}
 function GS(i){var e=document.querySelectorAll('.opt[data-q="'+i+'"].sel');return Array.from(e).map(function(el){return el.dataset.opt}).sort().join('')}
 function RS(){var h='',to={'单选':0,'多选':1,'判断':2};CQ.sort(function(a,b){return to[a.type]-to[b.type]});
@@ -119,7 +123,7 @@ function gen(){SUB=false;document.getElementById('sca').style.display='none';doc
 var v=document.getElementById('numSelect').value;
 var sp=AQ.filter(function(q){return q.type=='单选'}),mp=AQ.filter(function(q){return q.type=='多选'}),jp=AQ.filter(function(q){return q.type=='判断'});
 var ns,nd,nj;if(v=='20'){ns=6;nd=4;nj=10}else if(v=='50'){ns=14;nd=10;nj=26}else{ns=24;nd=20;nj=46}
-CQ=[].concat(SF([].concat(sp)).slice(0,ns),SF([].concat(mp)).slice(0,nd),SF([].concat(jp)).slice(0,nj));
+ var rr=RQ(),rs={};rr.forEach(function(id){rs[id]=1});CQ=[].concat(PK(sp,ns,rs),PK(mp,nd,rs),PK(jp,nj,rs));SQ(CQ);
 RS();document.getElementById('sa').style.display='block';document.getElementById('qCount').textContent=CQ.length;
 var tp=0;for(var k=0;k<CQ.length;k++)tp+=CQ[k].type=='单选'?1:CQ[k].type=='多选'?1.5:1;document.getElementById('totalPts').textContent=tp}
 function OD(){return new Promise(function(res,rej){var q=indexedDB.open(DBN,1);q.onupgradeneeded=function(e){var db=e.target.result;if(!db.objectStoreNames.contains(STORE)){var st=db.createObjectStore(STORE,{keyPath:'id',autoIncrement:true});st.createIndex('timeMs','timeMs')}};q.onsuccess=function(){res(q.result)};q.onerror=function(){rej(q.error)}})}
